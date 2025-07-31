@@ -24,6 +24,7 @@ const actions = [
   { elementId: 'lock' },
   { elementId: 'unLock' },
   { elementId: 'copyDescFromOther' },
+  { elementId: 'writeAlbumInfo' },
 ];
 
 function userConfirmation(action, filter, source) {

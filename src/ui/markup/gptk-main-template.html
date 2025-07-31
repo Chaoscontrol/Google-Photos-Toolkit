@@ -98,6 +98,13 @@
       >
         Copy Description from 'Other'
       </button>
+      <button
+        type="button"
+        id="writeAlbumInfo"
+        title="Writes album information to photo descriptions in the format 'album_name: Album1, Album2'. Use with caution!"
+      >
+        Write Album Info to Description
+      </button>
     </div>
 
     <div class="to-existing-container">
@@ -466,6 +473,12 @@
             <div class="input-wrapper">
               <input name="infoSize" value="5000" max="10000" min="1" type="number" required>
             </div>
+            <fieldset class="dry-run-option">
+              <label class="form-control">
+                <input name="dryRun" value="true" type="checkbox">
+                Dry Run (Preview changes without applying them)
+              </label>
+            </fieldset>
             <div class="settings-controls">
               <button name="save" type="submit">Save</button>
               <button name="default">Default</button>

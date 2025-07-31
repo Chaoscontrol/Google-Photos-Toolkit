@@ -1,7 +1,7 @@
 {
-  "name": "google-photos-toolkit",
-  "nameFull": "Google Photos Toolkit",
-  "version": "2.10.0",
+  "name": "google-photos-toolkit-album-metadata",
+  "nameFull": "Google Photos Toolkit with Album Metadata",
+  "version": "2.10.1",
   "description": "Bulk organize your media",
   "userScript": {
     "namespace": "https://github.com/xob0t/Google-Photos-Toolkit",

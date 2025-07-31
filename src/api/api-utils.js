@@ -9,6 +9,7 @@ export default class ApiUtils {
     this.executeWithConcurrency = this.executeWithConcurrency.bind(this);
     this.getAllItems = this.getAllItems.bind(this);
     this.copyOneDescriptionFromOther = this.copyOneDescriptionFromOther.bind(this);
+    this.writeOneAlbumInfoToDescription = this.writeOneAlbumInfoToDescription.bind(this);
     this.core = core;
     let { maxConcurrentSingleApiReq, maxConcurrentBatchApiReq, operationSize, infoSize, lockedFolderOpSize } =
       settings || apiSettingsDefault;
@@ -261,5 +262,73 @@ export default class ApiUtils {
     log(`Copying up to ${mediaItems.length} descriptions from 'Other' field`);
     const results = await this.executeWithConcurrency(this.copyOneDescriptionFromOther, 1, mediaItems);
     log(`Copied ${results.filter(Boolean).length} descriptions from 'Other' field`);
+  }
+
+  async writeOneAlbumInfoToDescription(mediaItems, apiSettings) {
+    try {
+      const item = mediaItems[0];
+      const dryRun = apiSettings?.dryRun === 'true';
+      
+      // Get extended information which includes album data
+      const itemInfoExt = await this.api.getItemInfoExt(item.mediaKey);
+      
+      // Check if we got valid information
+      if (!itemInfoExt) {
+        log(`Item ${item.mediaKey}: Shared asset. You can't edit its description.`);
+        return [false];
+      }
+      
+      // Check if the item belongs to any albums
+      if (!itemInfoExt.albums || itemInfoExt.albums.length === 0) {
+        log(`Item ${item.mediaKey} is not in any albums`);
+        return [false];
+      }
+      
+      // Extract album titles
+      const albumTitles = itemInfoExt.albums.map(album => album.title).filter(title => title);
+      
+      if (albumTitles.length === 0) {
+        log(`Item ${item.mediaKey} has no album titles`);
+        return [false];
+      }
+      
+      // Format album information
+      const albumInfo = `album_name: ${albumTitles.join(', ')}`;
+      
+      // Get current description
+      const currentDescription = itemInfoExt.descriptionFull || '';
+      
+      // Create new description by appending album info
+      let newDescription = currentDescription;
+      if (currentDescription && !currentDescription.endsWith('\n')) {
+        newDescription += '\n';
+      } else if (currentDescription && currentDescription.endsWith('\n')) {
+        // Remove trailing newline to avoid double newlines
+        newDescription = currentDescription.slice(0, -1);
+      }
+      newDescription += albumInfo;
+      
+      // Log what would be changed
+      log(`Item ${item.mediaKey}: ${dryRun ? '[DRY RUN] Would update' : 'Updating'} description from "${currentDescription}" to "${newDescription}"`);
+      
+      // Update description if not in dry run mode
+      if (!dryRun) {
+        await this.api.setItemDescription(item.dedupKey, newDescription);
+      }
+      
+      return [true];
+    } catch (error) {
+      console.error('Error in writeOneAlbumInfoToDescription:', error);
+      log(`Error processing item ${mediaItems[0]?.mediaKey}: ${error.message}`, 'error');
+      throw error;
+    }
+  }
+
+  async writeAlbumInfoToDescription(mediaItems, apiSettings) {
+    const dryRun = apiSettings?.dryRun === 'true';
+    log(`${dryRun ? '[DRY RUN] ' : ''}Writing album information to descriptions of ${mediaItems.length} items`);
+    const results = await this.executeWithConcurrency(this.writeOneAlbumInfoToDescription, 1, mediaItems, apiSettings);
+    const updatedCount = results.filter(Boolean).length;
+    log(`${dryRun ? '[DRY RUN] ' : ''}Processed ${mediaItems.length} items, ${dryRun ? 'would update' : 'updated'} ${updatedCount} items`);
   }
 }

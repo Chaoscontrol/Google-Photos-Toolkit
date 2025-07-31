@@ -348,6 +348,7 @@ export default class Core {
     // dispatch event to upate the ui without importing it
     document.dispatchEvent(new Event('change'));
     this.apiUtils = new ApiUtils(this, apiSettings || apiSettingsDefault);
+    this.currentApiSettings = apiSettings || apiSettingsDefault;
 
     try {
       const startTime = new Date();
@@ -393,5 +394,6 @@ export default class Core {
     if (action.elementId === 'toFavorite') await this.apiUtils.setAsFavorite(mediaItems);
     if (action.elementId === 'unFavorite') await this.apiUtils.unFavorite(mediaItems);
     if (action.elementId === 'copyDescFromOther') await this.apiUtils.copyDescriptionFromOther(mediaItems);
+    if (action.elementId === 'writeAlbumInfo') await this.apiUtils.writeAlbumInfoToDescription(mediaItems, this.currentApiSettings);
   }
 }
