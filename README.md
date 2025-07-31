@@ -8,6 +8,21 @@ Bulk organize your media
 
 In your browser, utilizing GP's undocumented web api
 
+## New Feature: Write Album Info to Description
+
+This version includes a new action button "Write Album Info to Description" that writes album membership information to photo descriptions in the format:
+```
+album_name: Album1, Album2
+```
+
+### Features:
+- **New Action Button**: Added a new action button to write album information to photo descriptions
+- **Dry Run Option**: A dry run option in advanced settings allows you to preview changes without applying them
+- **Safety First**: Comprehensive logging for all operations
+- **Append Mode**: Album information is appended to existing descriptions rather than replacing them
+- **Multiple Albums**: Supports photos that belong to multiple albums (comma-separated list)
+- **Shared Asset Handling**: Properly handles shared assets with clear error messaging
+
 ## How To Install
 
 1. Install any recommended userscript manager for your browser
@@ -16,8 +31,37 @@ In your browser, utilizing GP's undocumented web api
    - [Tampermonkey](https://www.tampermonkey.net/)
    - If you're on Android, try [Firefox](https://www.mozilla.org/firefox/browsers/mobile/android/) browser, it supports Tampermonkey
 
-2. Click [Install](https://github.com/xob0t/Google-Photos-Toolkit/releases/latest/download/google_photos_toolkit.user.js)
+2. Click [Install](https://github.com/Chaoscontrol/Google-Photos-Toolkit/releases/latest/download/google_photos_toolkit.user.js)
 3. Accept installation
+
+## Using the New Feature
+
+### 1. Select Photos to Process
+- Use the filters to select which photos you want to process
+- You can filter by date, albums, search terms, etc.
+
+### 2. Enable Safety Features (Recommended)
+- Open "Advanced Settings"
+- Check "Dry Run (Preview changes without applying them)" to preview changes first
+- Adjust other settings as needed
+
+### 3. Run the Feature
+- Click the "Write Album Info to Description" button
+- Confirm the action in the dialog that appears
+- Watch the log area for progress updates
+
+### 4. Review Results
+- In dry-run mode, you'll see what changes would be made without actually making them
+- In normal mode, the tool will update photo descriptions with album information
+
+## For Google Photos to Immich Migration
+
+This feature is specifically designed to help with Google Photos to Immich migration:
+
+1. **Run the Tool**: Process your Google Photos library with the new feature
+2. **Create a New Takeout**: Download a fresh Google Takeout after processing
+3. **Album Information Preserved**: Takeout will include album information in photo descriptions
+4. **Immich Import**: Use a modified immich-go that can read this album information for proper organization
 
 ## How to use
 
