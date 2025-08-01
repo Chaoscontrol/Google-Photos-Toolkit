@@ -348,6 +348,12 @@
             box-sizing: border-box;
         }
 
+        select.resizable {
+            resize: vertical;
+            min-height: 150px;
+            max-height: 400px;
+        }
+
 
         .select-control-buttons-row {
             display: grid;
